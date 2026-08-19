@@ -33,6 +33,9 @@ namespace eCommerce.Controllers
                 
                 _context.Products.Add(p);// add the product to the context
                 await _context.SaveChangesAsync();// save changes to the database
+
+                // TempData is used to pass data and will persist over a redirect
+                TempData["Message"] = $"{p.Title} was created successfully!";
                 
                 return RedirectToAction(nameof(Index));
             }
