@@ -1,6 +1,7 @@
 ﻿using eCommerce.Data;
 using eCommerce.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace eCommerce.Controllers
 {
@@ -12,9 +13,10 @@ namespace eCommerce.Controllers
         {
             _context = context;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            List<Product> allProducts = await _context.Products.ToListAsync();
+            return View(allProducts);
         }
         [HttpGet]
         public IActionResult Create()
@@ -31,6 +33,9 @@ namespace eCommerce.Controllers
                 
                 _context.Products.Add(p);// add the product to the context
                 await _context.SaveChangesAsync();// save changes to the database
+
+                // TempData is used to pass data and will persist over a redirect
+                TempData["Message"] = $"{p.Title} was created successfully!";
                 
                 return RedirectToAction(nameof(Index));
             }
