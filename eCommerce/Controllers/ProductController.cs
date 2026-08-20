@@ -43,11 +43,10 @@ namespace eCommerce.Controllers
             return View(p);// if model state is invalid, return the view with the product model to display validation errors
         }
         [HttpGet]
-        public IActionResult Edit(int id) 
+        public async Task<IActionResult> Edit(int id) 
         {
-            Product? product = _context.Products
-                .Where(p => p.ProductId == id)
-                .FirstOrDefault();
+            Product? product = await _context.Products.FindAsync(id);
+                
             if (product == null) 
             {
                 return NotFound();
@@ -68,6 +67,39 @@ namespace eCommerce.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(product);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Delete(int id)
+        { 
+           
+            Product? product = 
+               await _context.Products.FindAsync(id);
+                
+
+            if (product == null) 
+                {
+                return NotFound();
+                }
+            return View(product);
+        }
+        [ActionName(nameof(Delete))]
+        [HttpPost]
+      public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            Product? product = _context.Products
+                .Where(p => p.ProductId ==id)
+                .FirstOrDefault();
+
+            if (product == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            _context.Remove(product);
+            await _context.SaveChangesAsync();
+
+            TempData["Message"] = $"{product.Title} was successfull";
+            return RedirectToAction(nameof(Index));
         }
         
     }
