@@ -1,42 +1,53 @@
-﻿@model RegistractionViewModel
- 
+﻿
+@model RegistractionViewModel
 
 @{
 	ViewData["Title"] = "Register for a new account";
 }
 
-<h1>Register</h1>
+<div class="container py-4">
+	<h1 class="mb-4">Register</h1>
 
-<form method="post">
- <div>
-	<label asp-for="Email"></label>
-	<input asp-for="Email" />
-	<span asp-validation-for="Email"></span>
-</div>
-<div>
-   <label asp-for="UserName"></label>
-   <input asp-for="UserName" />
-   <span asp-validation-for="UserName"></span>
-<
-	</div>
-	<div>
-	<label asp-for="DateOfBirth"></label>
-	<input asp-for="DateOfBirth" />
-	<span asp-validation-for="DateOfBirth"></span>
-	
-	</div>
-	<div>
-	<label asp-for="Password"></label>
-	<input asp-for="Password" />
-	<span asp-validation-for="Password"></span>
+	<form method="post" novalidate>
+		<div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+		<div class="row">
+			<div class="col-md-6">
+				<div class="mb-3">
+					<label asp-for="Email" class="form-label"></label>
+					<input asp-for="Email" class="form-control" />
+					<span asp-validation-for="Email" class="text-danger small"></span>
+				</div>
+
+				<div class="mb-3">
+					<label asp-for="UserName" class="form-label"></label>
+					<input asp-for="UserName" class="form-control" />
+					<span asp-validation-for="UserName" class="text-danger small"></span>
+				</div>
+
+				<div class="mb-3">
+					<label asp-for="DateOfBirth" class="form-label"></label>
+					<input asp-for="DateOfBirth" class="form-control" type="date" />
+					<span asp-validation-for="DateOfBirth" class="text-danger small"></span>
+				</div>
+
+				<div class="mb-3">
+					<label asp-for="Password" class="form-label"></label>
+					<input asp-for="Password" class="form-control" />
+					<span asp-validation-for="Password" class="text-danger small"></span>
+				</div>
+
+				<div class="mb-3">
+					<label asp-for="ConfirmPassword" class="form-label"></label>
+					<input asp-for="ConfirmPassword" class="form-control" />
+					<span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+				</div>
+
+				<div class="mb-3">
+					<button type="submit" class="btn btn-primary">Create account</button>
+					<a asp-action="Login" class="btn btn-link">Already have an account?</a>
+				</div>
+			</div>
 		</div>
-		<div>
-		<label asp-for="ConfirmPassword"></label>
-		<input asp-for="ConfirmPassword" />
-		<span asp-validation-for="ConfirmPassword"></span>
+	</form>
 </div>
-<div>
-	<input type="submit" value="Create Account"/>
-</div>
-
-</form>
