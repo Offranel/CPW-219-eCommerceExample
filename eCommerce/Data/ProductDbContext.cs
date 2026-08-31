@@ -10,4 +10,6 @@ public class ProductDbContext : DbContext
     }
     // Entity to be tracked by DbContext
     public DbSet<Product> Products { get; set; }
+
+    public DbSet<Member> Members { get; set; }
 }
