@@ -13,7 +13,7 @@ namespace eCommerce.Controllers
         {
             _context = context;
         }
-        
+
         public IActionResult Index()
         {
             return View();
@@ -27,6 +27,8 @@ namespace eCommerce.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(RegistrationViewModel reg)
         {
+
+
             if (ModelState.IsValid)
             {
                 // Check if username or email is already taken 
@@ -35,7 +37,7 @@ namespace eCommerce.Controllers
                 if (usernameTaken)
                 {
                     ModelState.AddModelError(nameof(Member.Username), "Username already taken");
-                    
+
                 }
 
                 bool emailTaken = await _context.Members
@@ -44,14 +46,14 @@ namespace eCommerce.Controllers
                 if (emailTaken)
                 {
                     ModelState.AddModelError(nameof(Member.Email), "Email already taken");
-                   
+
                 }
 
                 if (usernameTaken || emailTaken)
                 {
                     return View(reg);
                 }
-                
+
                 // Map ViewModel To Member model tracked by DB       
                 Member newMember = new()
                 {
@@ -74,7 +76,40 @@ namespace eCommerce.Controllers
         {
             return View();
         }
-        
-       
+        [HttpPost]
+        public async Task<IActionResult> Login(LoginViewModel login)
+        {
+            
+            if (ModelState.IsValid)
+            {
+                // Check if the usernameOrEmail and Password matches a record in the database
+                var loggedInMember = await _context.Members
+                    .Where(m =>
+                        (m.Username == login.UsernameOrEmail ||
+                         m.Email == login.UsernameOrEmail)
+                        && m.Password == login.Password)
+                    .Select(m => new { m.Username, m.MemberId})
+                    .SingleOrDefaultAsync();
+
+                if (loggedInMember == null)
+                {
+                    ModelState.AddModelError(
+                        string.Empty,
+                        "Your provided credentials do not match any records in our database"
+                    );
+
+                    return View(login);
+                }
+                // Log the User in 
+                HttpContext.Session.SetString("Username", loggedInMember.Username);
+                HttpContext.Session.SetInt32("Id", loggedInMember.MemberId);
+
+                return RedirectToAction("Index", "Home");
+            }
+
+
+            return View(login);
+        }
     }
 }
+    
