@@ -15,20 +15,36 @@ namespace eCommerce.Controllers
         {
             _context = context;
         }
-        public async Task<IActionResult> Index(int page = 1)
+        public async Task<IActionResult> Index(string? searchTerm , decimal? minPrice, decimal? maxPrice = null, int page = 1)
         {
             // Change this value to adjust how many products are shown per page
             const int productsPerPage = 3;
+            var query = _context.Products.AsQueryable();
+
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                query = query.Where(p => p.Title.Contains(searchTerm));
+            }
+
+            if (minPrice.HasValue)
+            {
+                query = query.Where(p => p.Price >= minPrice.Value);
+            }
+
+            if (maxPrice.HasValue)
+            {
+                query = query.Where(p => p.Price <= maxPrice.Value);
+            }
 
             if (page < 1) page = 1;
 
-            int totalProducts = await _context.Products.CountAsync();
+            int totalProducts = await query.CountAsync();
             int totalPagesNeeded = (int)Math.Ceiling(totalProducts / (double)productsPerPage);
 
             // If user tries to navigate beyond last page, send them to the last page
             if (totalPagesNeeded > 0 && page > totalPagesNeeded) page = totalPagesNeeded;
             
-            var products = await _context.Products
+            var products = await query
                 .OrderBy(p => p.Title)
                 .Skip((page - 1) * productsPerPage)
                 .Take(productsPerPage)
@@ -40,13 +56,12 @@ namespace eCommerce.Controllers
                 CurrentPage = page,
                 TotalPages = totalPagesNeeded,
                 PageSize = productsPerPage,
-                TotalItems = totalProducts
+                TotalItems = totalProducts,
+                SearchTerm = searchTerm,
+                MinPrice = minPrice,
+                MaxPrice = maxPrice,
             };
 
-            
-            ViewBag.CurrentPage = page;
-            ViewBag.TotalPages = totalPagesNeeded;
-            ViewBag.ProductsPerPage = productsPerPage;
 
             return View(productListViewModel);
         }

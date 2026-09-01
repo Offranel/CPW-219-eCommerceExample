@@ -9,6 +9,49 @@
 	Create Product
 
 </a>
+<form method="get" asp-action="Index" class="row g-3 mb-4">
+
+    <div class="col-md-4">
+        <label for="searchTerm" class="form-label">Title Contains</label>
+        <input type="text"
+               id="searchTerm"
+               name="searchTerm"
+               value="@Model.SearchTerm"
+               class="form-control" />
+    </div>
+
+    <div class="col-md-2">
+        <label for="minPrice" class="form-label">Min Price</label>
+        <input type="number"
+               step="0.01"
+               id="minPrice"
+               name="minPrice"
+               value="@Model.MinPrice"
+               class="form-control" />
+    </div>
+
+    <div class="col-md-2">
+        <label for="maxPrice" class="form-label">Max Price</label>
+        <input type="number"
+               step="0.01"
+               id="maxPrice"
+               name="maxPrice"
+               value="@Model.MaxPrice"
+               class="form-control" />
+    </div>
+
+    <div class="col-md-4 d-flex align-items-end gap-2">
+        <button type="submit" class="btn btn-primary">
+            Search
+        </button>
+
+        <a asp-action="Index"
+           class="btn btn-outline-secondary">
+            Reset
+        </a>
+    </div>
+
+</form>
 
 @if (TempData ["Message"] != null)
 {
